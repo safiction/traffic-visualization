@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>Network Globe</title>
+
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+      }
+    }
+    </script>
+
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            background: #000000;
+            color: white;
+            font-family: 'Inter', sans-serif;
+        }
+
+        #leftPanel {
+            width: 40%;
+            padding: 40px;
+            background: #020617;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+}
+
+        #rightPanel {
+            width: 60%;
+            position: relative;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        h1 {
+            margin-top: 0;
+        }
+
+        .stat {
+            margin: 10px 0;
+            font-size: 18px;
+        }
+
+        .btn {
+            margin-top: 10px;
+            padding: 10px 14px;
+            background: #1f2937;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: 0.2s;
+            display: block;
+            width: 150px;
+        }
+
+        .btn:hover {
+            background: #374151;
+        }
+
+        .btn.active {
+            background: #2563eb;
+        }
+
+        .btn.danger {
+            background: #dc2626;
+        }
+
+        .bar-container {
+            margin-top: 20px;
+        }
+
+        .bar-bg {
+            background: #1f2937;
+            height: 20px;
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        .bar-fill {
+            height: 100%;
+            width: 0%;
+            transition: width 0.2s;
+        }
+
+        .green {
+            background: #22c55e;
+        }
+
+        .red {
+            background: #ef4444;
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="leftPanel">
+    <h1>Assignment 2: Traffic visualisation</h1>
+    <p>
+        Description:
+        Real-time visualization of incoming packets across the globe.
+        Suspicious traffic is highlighted in red, non-suspicious is in green.
+        Statistics is updated below:
+    </p>
+
+    <div class="stat">Total: <span id="total">0</span></div>
+    <div class="stat">Suspicious: <span id="sus">0</span></div>
+    <div class="stat">Normal: <span id="norm">0</span></div>
+
+    <div class="bar-container">
+        <div>Normal</div>
+        <div class="bar-bg">
+            <div id="barNormal" class="bar-fill green"></div>
+        </div>
+
+        <div>Suspicious</div>
+        <div class="bar-bg">
+            <div id="barSuspicious" class="bar-fill red"></div>
+        </div>
+    </div>
+
+    <p>
+        You can speed up the appearance of packets by clicking buttons below
+    </p>
+    <button id="pauseBtn" class="btn">Pause</button>
+    <button id="speedUpBtn" class="btn">Speed x2</button>
+    <button id="resetSpeedBtn" class="btn">Reset Speed</button>
+
+    <p>
+        You can also rotate the globe for better vizualization.
+    </p>
+
+    <p>
+        Done by Safina, group DS-01
+    </p>
+</div>
+
+<div id="rightPanel"></div>
+
+<script type="module" src="{{ url_for('static', filename='earth.js') }}"></script>
+
+</body>
+</html>
