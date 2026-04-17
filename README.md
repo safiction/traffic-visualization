@@ -3,6 +3,9 @@
 # Project Description
 This project visualizes incoming web traffic on an interactive 3D globe. The `sender.py` script reads IP address data from a CSV file and sends it to the Flask server with realistic time intervals. Received packets are dynamically displayed as colored points on the globe — green for normal traffic, red for suspicious activity. Points appear in real-time and stay on the map.
 
+# How it looks?
+![preview.png](preview.png)
+
 # Stack
 - Flask microframework for the backend
 - Three.js for the frontend
