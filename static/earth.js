@@ -57,12 +57,13 @@ function latLonToVector3(lat, lon, radius) {
   return new THREE.Vector3(x, y, z);
 }
 
-let speed = 100;
 let paused = false;
 
 let total = 0;
 let suspicious = 0;
 let normal = 0;
+
+let lastIndex = 0;
 
 const pauseBtn = document.getElementById("pauseBtn");
 const speedBtn = document.getElementById("speedUpBtn");
@@ -75,13 +76,12 @@ pauseBtn.onclick = () => {
 };
 
 speedBtn.onclick = () => {
-  speed = Math.max(10, speed / 2);
   speedBtn.classList.add("active");
   setTimeout(() => speedBtn.classList.remove("active"), 200);
 };
 
 resetBtn.onclick = () => {
-  speed = 100;
+  location.reload();
 };
 
 const totalEl = document.getElementById("total");
@@ -91,24 +91,21 @@ const normEl = document.getElementById("norm");
 const barNormal = document.getElementById("barNormal");
 const barSuspicious = document.getElementById("barSuspicious");
 
-fetch('/static/coordinates.json')
-  .then(res => res.json())
-  .then(data => {
+// data receiving from Flask
+function fetchData() {
+  if (paused) return;
 
-    data.sort((a, b) => a[3] - b[3]);
+  fetch('/data')
+    .then(res => res.json())
+    .then(data => {
 
-    let index = 0;
+      while (lastIndex < data.length) {
+        const pkt = data[lastIndex];
 
-    function processNext() {
-      if (index >= data.length) return;
-
-      if (!paused) {
-        const [ip, lat, lon, ts, sus] = data[index];
-
-        const pos = latLonToVector3(lat, lon, 2.5);
+        const pos = latLonToVector3(pkt.lat, pkt.lon, 2.5);
 
         const geometry = new THREE.SphereGeometry(0.035, 8, 8);
-        const color = sus === 1 ? 0xff0000 : 0x00ff00;
+        const color = pkt.suspicious === 1 ? 0xff0000 : 0x00ff00;
 
         const material = new THREE.MeshBasicMaterial({
           color,
@@ -122,7 +119,7 @@ fetch('/static/coordinates.json')
         scene.add(point);
 
         total++;
-        if (sus === 1) suspicious++;
+        if (pkt.suspicious === 1) suspicious++;
         else normal++;
 
         totalEl.textContent = total;
@@ -135,14 +132,13 @@ fetch('/static/coordinates.json')
         barNormal.style.width = normalPercent + "%";
         barSuspicious.style.width = susPercent + "%";
 
-        index++;
+        lastIndex++;
       }
+    });
+}
 
-      setTimeout(processNext, speed);
-    }
-
-    processNext();
-  });
+// polling
+setInterval(fetchData, 500);
 
 function animate() {
   requestAnimationFrame(animate);

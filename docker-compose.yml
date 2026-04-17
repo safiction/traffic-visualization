@@ -9,8 +9,16 @@ services:
     volumes:
       - ./static:/app/static
       - ./templates:/app/templates
-      - ./app.py:/app/app.py
     environment:
       - FLASK_ENV=development
       - FLASK_DEBUG=1
     command: python app.py
+
+  sender:
+    build: .
+    container_name: traffic-sender
+    depends_on:
+      - flask-app
+    volumes:
+      - ./static:/app/static
+    command: python sender.py
